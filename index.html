@@ -9,7 +9,7 @@
   </head>
   <body>
     <!-- <model-viewer> HTML element -->
-    <model-viewer src="table2.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls poster="poster.webp" shadow-intensity="1" environment-image="pillars_1k.hdr">
+    <model-viewer id="table" src="table2.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls poster="poster.webp" shadow-intensity="1" environment-image="pillars_1k.hdr">
       <button class="Hotspot" slot="hotspot-1" data-position="2.817795511979456m 4.304860220529365m 1.1136392896832994m" data-normal="0.5427207303052642m 0m 0.8399132150983937m" data-visibility-attribute="visible">
           <div class="HotspotAnnotation">Mohogany Wood</div>
       </button><button class="Hotspot" slot="hotspot-2" data-position="-0.09407337309163921m 1.6028015987882847m 0.17210625112056732m" data-normal="0m 0m 1m" data-visibility-attribute="visible">
@@ -26,6 +26,41 @@
       <div id="ar-prompt">
           <img src="ar_hand_prompt.png">
       </div>
+       <p>Diffuse</p>
+      <select id="diffuse">
+        <option value="wood1.jpeg">light brown</option>
+        <option value="wood2.jpeg">dark brown</option>
+        <option value="wood3.jpeg">cream</option>
+        <option value="wood4.jpeg">beige</option>
+      </select>
+    </div> 
+    </model-viewer>  
+    <script type="module">
+      const modelViewerTexture1 = document.querySelector("model-viewer#table");
+      
+      modelViewerTexture1.addEventListener("load", () => {
+      
+        const material = modelViewerTexture1.model.materials[0];
+      
+        const createAndApplyTexture = async (channel, event) => {
+          const texture = await modelViewerTexture1.createTexture(event.target.value);
+          if (channel.includes('base') || channel.includes('metallic')) {
+            material.pbrMetallicRoughness[channel].setTexture(texture);
+          } else {
+            material[channel].setTexture(texture);
+          }
+        }
+      
+
+      
+        document.querySelector('#diffuse').addEventListener('input', (event) => {
+          createAndApplyTexture('baseColorTexture', event);
+        });
+      
+    
+      });
+      
+      </script>
     </model-viewer>  
     <script src="script.js"></script>
     <!-- Loads <model-viewer> for browsers: -->
